@@ -22,14 +22,14 @@ class MetaTrader5:
         action = self.mt5.TRADE_ACTION_DEAL
         type = self.mt5.ORDER_TYPE_BUY
         price = self.mt5.symbol_info_tick(self.symbol).ask
-        sl = self.mt5.symbol_info_tick("XAUUSD").ask - self.slTP
-        tp = self.mt5.symbol_info_tick("XAUUSD").ask + self.slTP
+        sl = self.mt5.symbol_info_tick(self.symbol).ask - self.slTP
+        tp = self.mt5.symbol_info_tick(self.symbol).ask + self.slTP
         comment = 'Python script open position'
         if typeDirection != 'buy':
             type = self.mt5.ORDER_TYPE_SELL
             price = self.mt5.symbol_info_tick(self.symbol).bid
-            sl = self.mt5.symbol_info_tick("XAUUSD").bid + self.slTP
-            tp = self.mt5.symbol_info_tick("XAUUSD").bid - self.slTP
+            sl = self.mt5.symbol_info_tick(self.symbol).bid + self.slTP
+            tp = self.mt5.symbol_info_tick(self.symbol).bid - self.slTP
 
         request = {
             "action": action,
@@ -42,6 +42,9 @@ class MetaTrader5:
             "comment": comment,
         }
         position = self.mt5.order_send(request)
+        if(position.comment == 'Requote'):
+            print('Requote')
+            self.market_position(typeDirection)
         return position
 
     def remove_all_position(self):
@@ -53,14 +56,14 @@ class MetaTrader5:
         action = self.mt5.TRADE_ACTION_PENDING
         type = self.mt5.ORDER_TYPE_BUY_LIMIT
         price = self.mt5.symbol_info_tick(self.symbol).ask - self.orderStop
-        sl = self.mt5.symbol_info_tick("XAUUSD").ask - self.slTP
-        tp = self.mt5.symbol_info_tick("XAUUSD").ask
+        sl = self.mt5.symbol_info_tick(self.symbol).ask - self.slTP
+        tp = self.mt5.symbol_info_tick(self.symbol).ask
         comment = 'Python script open order'
         if typeDirection != 'buy':
             type = self.mt5.ORDER_TYPE_SELL_LIMIT
             price = self.mt5.symbol_info_tick(self.symbol).bid + self.orderStop
-            sl = self.mt5.symbol_info_tick("XAUUSD").bid + self.slTP
-            tp = self.mt5.symbol_info_tick("XAUUSD").bid
+            sl = self.mt5.symbol_info_tick(self.symbol).bid + self.slTP
+            tp = self.mt5.symbol_info_tick(self.symbol).bid
 
         request = {
             "action": action,
