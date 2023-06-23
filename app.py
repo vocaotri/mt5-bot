@@ -30,6 +30,7 @@ def trade():
     requestJson = request.get_json()
     type = requestJson.get('type')
     token = requestJson.get('token')
+    type = type.strip()
     if type == None:
         return 'type is required', 400
     if token == None:
