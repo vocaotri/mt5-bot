@@ -17,10 +17,11 @@ class MetaTrader5:
         if isLogined == False:
             print('Login failed')
             quit()
-        if(self.mt5.account_info().currency == 'USD'):
-            myBalance = self.mt5.account_info().balance
-            self.minLot = self.lotPercent(self.minLot, myBalance)
-            self.maxLot = self.lotPercent(self.maxLot, myBalance)
+        myBalance = self.mt5.account_info().balance
+        myCurrency = self.mt5.account_info().currency
+        if(myCurrency == 'USD' and myBalance >= 100):
+            self.minLot = round(self.lotPercent(self.minLot, myBalance), 2)
+            self.maxLot = round(self.lotPercent(self.maxLot, myBalance), 2)
         print('MT5 initialize success')
 
     def market_position(self, typeDirection='buy'):
