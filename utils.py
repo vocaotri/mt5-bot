@@ -17,6 +17,11 @@ class MetaTrader5:
         if isLogined == False:
             print('Login failed')
             quit()
+        if(self.mt5.account_info().currency == 'USD'):
+            myBalance = self.mt5.account_info().balance
+            self.minLot = self.lotPercent(self.minLot, myBalance)
+            self.maxLot = self.lotPercent(self.maxLot, myBalance)
+        print('MT5 initialize success')
 
     def market_position(self, typeDirection='buy'):
         action = self.mt5.TRADE_ACTION_DEAL
@@ -42,7 +47,7 @@ class MetaTrader5:
             "comment": comment,
         }
         position = self.mt5.order_send(request)
-        if(position.comment == 'Requote'):
+        if (position.comment == 'Requote'):
             print('Requote')
             self.market_position(typeDirection)
         return position
@@ -86,6 +91,12 @@ class MetaTrader5:
                 "order": order.ticket,  # select the position you want to close
             }
             order = self.mt5.order_send(request)
+
+    def get_account_info(self):
+        return self.mt5.account_info()
+    
+    def lotPercent(self, volume, balance):
+        return volume * balance / 100
 
     def quickTrade(self, typeDirection='buy'):
         self.remove_all_position()
